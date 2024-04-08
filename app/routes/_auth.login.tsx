@@ -1,3 +1,4 @@
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { Button } from '~/components/ui/button';
 import {
@@ -10,6 +11,20 @@ import {
 } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
+import { authenticator } from '~/utils/auth.server';
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  return await authenticator.isAuthenticated(request, {
+    successRedirect: '/dashboard',
+  });
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  return await authenticator.authenticate('user-pass', request, {
+    successRedirect: '/dashboard',
+    failureRedirect: '/login',
+  });
+}
 
 export default function LoginPage() {
   return (
@@ -24,7 +39,7 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form id="login-form">
+        <form id="login-form" method="post">
           <div className="grid w-full items-center gap-4">
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
