@@ -15,12 +15,13 @@ model User {
   username  String    @unique
   passHash  String
   createdAt DateTime  @default(now())
-  Message   Message[]
+  messages  Message[]
 }
 
 model Message {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
+  image     Bytes
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
 }
