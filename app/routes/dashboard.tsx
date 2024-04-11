@@ -87,14 +87,6 @@ export function createMessageNodes(messageArr: CreateMessageNodeArgs) {
 export default function DashboardPage() {
   const { messageArr } = useLoaderData<typeof loader>();
 
-  // const amessageArr = messageArr.map((message) => {
-  //   return {
-  //     id: message.id,
-  //     drawing: message.drawing,
-  //     username: message.username,
-  //   };
-  // });
-
   const messageNodeArr = createMessageNodes(messageArr);
 
   return (
