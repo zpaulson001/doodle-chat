@@ -3,5 +3,11 @@ type MessageProps = {
 };
 
 export default function Message(props: MessageProps) {
-  return <img className="rounded-md" alt="user-drawing" src={props.url} />;
+  return (
+    <img
+      className="rounded-md flex-grow-0"
+      alt="user-drawing"
+      src={props.url}
+    />
+  );
 }
