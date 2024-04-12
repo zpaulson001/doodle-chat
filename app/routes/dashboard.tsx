@@ -9,6 +9,7 @@ import {
   unstable_parseMultipartFormData,
 } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
+import { useEffect, useRef, useState } from 'react';
 import DrawingPad from '~/components/drawingPad';
 import Layout from '~/components/layout';
 import Message from '~/components/message';
@@ -81,16 +82,28 @@ export function createMessageNodes(messageArr: CreateMessageNodeArgs) {
     return <Message key={message.id} url={message.url} />;
   });
 
+  console.log('message nodes rendering');
+
   return messageNodeArr;
 }
 
 export default function DashboardPage() {
+  const messageEndRef = useRef<HTMLDivElement>(null);
   const { messageArr } = useLoaderData<typeof loader>();
+  const [messageArrLength, setMessageArrLength] = useState(messageArr.length);
 
   const messageNodeArr = createMessageNodes(messageArr);
 
+  useEffect(() => {
+    setMessageArrLength(messageArr.length);
+  }, [messageArr]);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messageArrLength]);
+
   return (
-    <Layout className="flex flex-col justify-center items-center">
+    <Layout className="grid p-4 gap-4 justify-center justify-items-center content-end">
       <div className="fixed top-0 left-0 p-4">
         <h1>{`Dashboard`}</h1>
         <Form method="post">
@@ -99,7 +112,10 @@ export default function DashboardPage() {
           </Button>
         </Form>
       </div>
-      <div>{messageNodeArr}</div>
+      <div className="w-[600px] grid gap-2 justify-end items-end border-slate-950 border overflow-x-auto">
+        {messageNodeArr}
+        <div ref={messageEndRef}></div>
+      </div>
       <DrawingPad />
     </Layout>
   );
