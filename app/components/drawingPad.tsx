@@ -101,7 +101,7 @@ export default function DrawingPad() {
   return (
     <div className="flex gap-2">
       <canvas
-        className="h-[180px] w-[300px] rounded-md border border-input bg-white p-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-[150px] w-[300px] rounded-md border border-input bg-white p-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         ref={canvas}
       ></canvas>
       <div className="flex flex-col-reverse gap-2">
