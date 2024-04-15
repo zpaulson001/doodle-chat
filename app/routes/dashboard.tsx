@@ -112,7 +112,7 @@ export default function DashboardPage() {
           </Button>
         </Form>
       </div>
-      <div className="w-[600px] grid gap-2 justify-end items-end border-slate-950 border overflow-x-auto">
+      <div className="w-[600px] grid gap-2 justify-end items-end overflow-x-auto">
         {messageNodeArr}
         <div ref={messageEndRef}></div>
       </div>
