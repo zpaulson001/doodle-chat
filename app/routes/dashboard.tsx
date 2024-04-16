@@ -11,7 +11,7 @@ import DrawingPad from '~/components/drawingPad';
 import Layout from '~/components/layout';
 import MessageList from '~/components/messageList';
 import { Button } from '~/components/ui/button';
-import { readMessages } from '~/db/models';
+import { readAllMessages } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 import { handleCreateMessage } from '~/utils/dashboard.server';
 
@@ -20,9 +20,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     failureRedirect: '/login',
   });
 
-  const messageArr = await readMessages(user.id);
+  const messageArr = await readAllMessages();
 
-  return json({ messageArr });
+  return json({ myUsername: user.username, messageArr });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -53,7 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function DashboardPage() {
   const messageEndRef = useRef<HTMLDivElement>(null);
   const messageWindowRef = useRef<HTMLDivElement>(null);
-  const { messageArr } = useLoaderData<typeof loader>();
+  const { myUsername, messageArr } = useLoaderData<typeof loader>();
   const path = useResolvedPath('./stream');
   const data = useEventSource(path.pathname);
   const revalidator = useRevalidator();
@@ -83,9 +83,9 @@ export default function DashboardPage() {
       </div>
       <div
         ref={messageWindowRef}
-        className="w-[600px] grid gap-2 justify-end items-end overflow-x-auto"
+        className="w-[600px] grid gap-2 justify-stretch items-end overflow-x-auto"
       >
-        <MessageList messageArr={messageArr} />
+        <MessageList messageArr={messageArr} myUsername={myUsername} />
         <div id="chat-window-bottom" ref={messageEndRef}></div>
       </div>
       <DrawingPad />
