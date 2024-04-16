@@ -1,4 +1,3 @@
-import { getImageAsDataUrl } from '~/utils/dashboard.server';
 import { db } from './db';
 
 export async function createUser(username: string, passHash: string) {
@@ -7,7 +6,7 @@ export async function createUser(username: string, passHash: string) {
 
 export async function createMessage(userId: string, image: string) {
   return db.message.create({
-    data: { authorId: userId, path: image },
+    data: { authorId: userId, image: image },
   });
 }
 
@@ -18,7 +17,7 @@ export async function readMessages(userId: string) {
     },
     select: {
       id: true,
-      path: true,
+      image: true,
       author: {
         select: {
           username: true,
@@ -30,7 +29,7 @@ export async function readMessages(userId: string) {
   const messages = query.map((entry) => {
     return {
       id: entry.id,
-      url: getImageAsDataUrl(entry.path),
+      url: entry.image,
       username: entry.author.username,
     };
   });

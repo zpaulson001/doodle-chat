@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Send, Trash2 } from 'lucide-react';
-import { useFetcher, useLoaderData } from '@remix-run/react';
+import { useFetcher } from '@remix-run/react';
 import { ActionFunctionArgs } from '@remix-run/node';
 
 function clearCanvas(canvas: HTMLCanvasElement) {
@@ -38,7 +38,6 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
       endPosition();
       return;
     }
-    // console.log(`${e.offsetX}, ${e.offsetY}`);
     ctx?.lineTo(e.offsetX, e.offsetY);
     ctx?.stroke();
     ctx?.beginPath();
@@ -58,7 +57,6 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function DrawingPad() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const fetcher = useFetcher();
-  const data = useLoaderData();
 
   useEffect(() => {
     if (canvas.current === null) {
@@ -77,24 +75,20 @@ export default function DrawingPad() {
   }
 
   function handleSubmit() {
-    console.log(data);
     if (canvas.current === null) {
       return;
     } else {
       const formData = new FormData();
-      canvas.current.toBlob((blob) => {
-        if (blob !== null) {
-          formData.append('drawing', blob, `${crypto.randomUUID()}.png`);
-          formData.append('intent', 'sendMessage');
-          console.log(formData);
-          fetcher.submit(formData, {
-            method: 'post',
-            encType: 'multipart/form-data',
-          });
-        }
 
-        if (canvas.current) clearCanvas(canvas.current);
-      }, 'image/png');
+      const dataUrl = canvas.current.toDataURL();
+
+      formData.append('drawing', dataUrl);
+      formData.append('intent', 'sendMessage');
+      fetcher.submit(formData, {
+        method: 'post',
+      });
+
+      if (canvas.current) clearCanvas(canvas.current);
     }
   }
 

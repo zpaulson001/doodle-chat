@@ -1,21 +1,19 @@
+import { ActionFunctionArgs, LoaderFunctionArgs, json } from '@remix-run/node';
 import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  NodeOnDiskFile,
-  json,
-  unstable_composeUploadHandlers,
-  unstable_createFileUploadHandler,
-  unstable_createMemoryUploadHandler,
-  unstable_parseMultipartFormData,
-} from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
-import { useEffect, useRef, useState } from 'react';
+  Form,
+  useLoaderData,
+  useResolvedPath,
+  useRevalidator,
+} from '@remix-run/react';
+import { useEffect, useRef } from 'react';
+import { useEventSource } from 'remix-utils/sse/react';
 import DrawingPad from '~/components/drawingPad';
 import Layout from '~/components/layout';
-import Message from '~/components/message';
+import MessageList from '~/components/messageList';
 import { Button } from '~/components/ui/button';
-import { createMessage, readMessages } from '~/db/models';
+import { readMessages } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
+import { handleCreateMessage } from '~/utils/dashboard.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request, {
@@ -32,75 +30,46 @@ export async function action({ request }: ActionFunctionArgs) {
     failureRedirect: '/login',
   });
 
-  const formData = await unstable_parseMultipartFormData(
-    request,
-    unstable_composeUploadHandlers(
-      unstable_createFileUploadHandler({
-        filter({ contentType }) {
-          return contentType.includes('image');
-        },
-        directory: './public/img',
-        avoidFileConflicts: false,
-        file({ filename }) {
-          return filename;
-        },
-      }),
-      unstable_createMemoryUploadHandler()
-    )
-  );
+  const formData = await request.formData();
 
-  const drawing = formData.get('drawing') as NodeOnDiskFile;
+  const intent = formData.get('intent');
 
-  const drawingPath = drawing.getFilePath();
+  if (!intent) {
+    return null;
+  }
 
-  console.log(drawing);
-  console.log(drawingPath);
-
-  switch (formData.get('intent') as string) {
+  switch (intent) {
     case 'logout':
       await authenticator.logout(request, { redirectTo: '/login' });
       break;
     case 'sendMessage':
-      if (drawing !== null) {
-        await createMessage(user.id, drawingPath);
-      }
-      return 'image created';
+      await handleCreateMessage(user.id, formData);
       break;
   }
 
-  return json(formData);
-}
-
-type CreateMessageNodeArgs = {
-  id: string;
-  url: string;
-  username: string;
-}[];
-
-export function createMessageNodes(messageArr: CreateMessageNodeArgs) {
-  const messageNodeArr = messageArr.map((message) => {
-    return <Message key={message.id} url={message.url} />;
-  });
-
-  console.log('message nodes rendering');
-
-  return messageNodeArr;
+  return json('done');
 }
 
 export default function DashboardPage() {
   const messageEndRef = useRef<HTMLDivElement>(null);
+  const messageWindowRef = useRef<HTMLDivElement>(null);
   const { messageArr } = useLoaderData<typeof loader>();
-  const [messageArrLength, setMessageArrLength] = useState(messageArr.length);
+  const path = useResolvedPath('./stream');
+  const data = useEventSource(path.pathname);
+  const revalidator = useRevalidator();
 
-  const messageNodeArr = createMessageNodes(messageArr);
+  // function scrollToBottom() {
+  //   messageEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  //   messageWindowRef.current?.scroll({
+  //     top: messageWindowRef.current.scrollHeight,
+  //     behavior: 'smooth',
+  //   });
+  // }
 
   useEffect(() => {
-    setMessageArrLength(messageArr.length);
-  }, [messageArr]);
-
-  useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [messageArrLength]);
+    revalidator.revalidate();
+    // scrollToBottom();
+  }, [data]);
 
   return (
     <Layout className="grid p-4 gap-4 justify-center justify-items-center content-end">
@@ -112,9 +81,12 @@ export default function DashboardPage() {
           </Button>
         </Form>
       </div>
-      <div className="w-[600px] grid gap-2 justify-end items-end overflow-x-auto">
-        {messageNodeArr}
-        <div ref={messageEndRef}></div>
+      <div
+        ref={messageWindowRef}
+        className="w-[600px] grid gap-2 justify-end items-end overflow-x-auto"
+      >
+        <MessageList messageArr={messageArr} />
+        <div id="chat-window-bottom" ref={messageEndRef}></div>
       </div>
       <DrawingPad />
     </Layout>
