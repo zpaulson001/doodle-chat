@@ -83,7 +83,7 @@ export default function DashboardPage() {
       </div>
       <div
         ref={messageWindowRef}
-        className="w-[600px] grid gap-2 justify-stretch items-end overflow-x-auto"
+        className="w-[600px] grid gap-4 justify-stretch items-end overflow-x-auto"
       >
         <MessageList messageArr={messageArr} myUsername={myUsername} />
         <div id="chat-window-bottom" ref={messageEndRef}></div>
