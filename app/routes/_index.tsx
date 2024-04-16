@@ -1,4 +1,9 @@
+import { redirect } from '@remix-run/node';
 import Layout from '~/components/layout';
+
+export async function loader() {
+  return redirect('/login');
+}
 
 export default function Index() {
   return (
