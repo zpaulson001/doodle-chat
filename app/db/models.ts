@@ -36,3 +36,27 @@ export async function readMessages(userId: string) {
 
   return messages;
 }
+
+export async function readAllMessages() {
+  const query = await db.message.findMany({
+    select: {
+      id: true,
+      image: true,
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+
+  const messages = query.map((entry) => {
+    return {
+      id: entry.id,
+      url: entry.image,
+      username: entry.author.username,
+    };
+  });
+
+  return messages;
+}
