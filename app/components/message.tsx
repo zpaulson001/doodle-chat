@@ -9,10 +9,9 @@ export default function Message({ url, username, myUsername }: MessageProps) {
   console.log(myUsername, username);
 
   return (
-    <img
-      className={`rounded-md flex-grow-0 ${isMe ? 'justify-self-end' : 'justify-self-start'}`}
-      alt="user-drawing"
-      src={url}
-    />
+    <div className={`${isMe ? 'justify-self-end' : 'justify-self-start'}`}>
+      {isMe ? null : <p>@{username}</p>}
+      <img className={`rounded-md flex-grow-0`} alt="user-drawing" src={url} />
+    </div>
   );
 }
