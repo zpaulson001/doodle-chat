@@ -31,9 +31,10 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.5",
     "@remix-run/dev": "^2.8.1",
-    "@types/react": "^18.2.20",
     "@types/bun": "^1.0.12",
+    "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
