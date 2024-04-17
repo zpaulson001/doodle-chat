@@ -22,9 +22,30 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
   ctx.lineWidth = 6;
   ctx.lineCap = 'round';
 
-  function startPosition(e: MouseEvent) {
+  type Position = {
+    x: number;
+    y: number;
+  };
+
+  function getPosition(e: MouseEvent | TouchEvent) {
+    let x = 0;
+    let y = 0;
+
+    if (e instanceof MouseEvent) {
+      x = e.offsetX;
+      y = e.offsetY;
+    } else if (e instanceof TouchEvent) {
+      const canvasRect = canvas.getBoundingClientRect();
+      x = e.touches[0].clientX - canvasRect.x;
+      y = e.touches[0].clientY - canvasRect.y;
+    }
+
+    return { x, y };
+  }
+
+  function startPosition(pos: Position) {
     isDrawing = true;
-    draw(e);
+    draw(pos);
   }
 
   function endPosition() {
@@ -32,22 +53,56 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
     ctx?.beginPath();
   }
 
-  function draw(e: MouseEvent) {
+  function draw({ x, y }: Position) {
     if (!isDrawing) return;
-    if (e.offsetX <= 0 || e.offsetY <= 0) {
+    if (x <= 0 || y <= 0) {
       endPosition();
       return;
     }
-    ctx?.lineTo(e.offsetX, e.offsetY);
+    ctx?.lineTo(x, y);
     ctx?.stroke();
     ctx?.beginPath();
-    ctx?.moveTo(e.offsetX, e.offsetY);
+    ctx?.moveTo(x, y);
   }
 
-  canvas.addEventListener('mousedown', (e) => startPosition(e));
+  document.body.addEventListener(
+    'touchstart',
+    (e) => {
+      if (e.target === canvas) {
+        e.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+  document.body.addEventListener(
+    'touchend',
+    (e) => {
+      if (e.target === canvas) {
+        e.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+  document.body.addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.target === canvas) {
+        e.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+
+  canvas.addEventListener('mousedown', (e) => startPosition(getPosition(e)));
+  canvas.addEventListener('touchstart', (e) => {
+    startPosition(getPosition(e));
+  });
   canvas.addEventListener('mouseup', endPosition);
-  canvas.addEventListener('mousemove', (e) => draw(e));
+  canvas.addEventListener('touchend', endPosition);
+  canvas.addEventListener('mousemove', (e) => draw(getPosition(e)));
+  canvas.addEventListener('touchmove', (e) => draw(getPosition(e)));
   canvas.addEventListener('mouseout', endPosition);
+  canvas.addEventListener('touchcancel', endPosition);
 }
 
 export async function action({ request }: ActionFunctionArgs) {
