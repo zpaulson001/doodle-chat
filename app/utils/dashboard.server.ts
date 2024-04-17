@@ -15,7 +15,6 @@ export async function handleCreateMessage(userId: string, formData: FormData) {
   if (drawing !== null) {
     await createMessage(userId, drawing);
     emitter.emit('chat');
-    console.log('emitted');
     return 'image created';
   }
 

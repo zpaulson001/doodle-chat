@@ -6,7 +6,6 @@ type MessageProps = {
 
 export default function Message({ url, username, myUsername }: MessageProps) {
   const isMe = myUsername === username;
-  console.log(myUsername, username);
 
   return (
     <div className={`${isMe ? 'justify-self-end' : 'justify-self-start'}`}>

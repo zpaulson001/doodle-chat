@@ -13,8 +13,6 @@ const formStrategy = new FormStrategy(async ({ form }) => {
 
   const user = await db.user.findUnique({ where: { username: username } });
 
-  console.log(user);
-
   if (!user) {
     console.log('Username does not exist');
     throw new AuthorizationError();
