@@ -1,36 +1,15 @@
-# Welcome to Remix + Vite!
+# Welcome to Doodle Chat!
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
+Doodle chat is a web application that allows users to post simple black and white doodles to a public message board. It's built with Remix, shadcn/ui componenets, Tailwind, Prisma, and Turso.
 
-## Development
+## Fixes
 
-Run the Vite dev server:
+- [ ] Login/Signup form validation
+- [ ] Error handling
+  - [ ] 404 page
 
-```shellscript
-npm run dev
-```
+## Future Features
 
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
+- [ ] Users can send private messages to specific users or groups using conversation threads
+- [ ] Users can switch between conversation threads using the sidebar
+- [ ] Users can draw their own profile picture
