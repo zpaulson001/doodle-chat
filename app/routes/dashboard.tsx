@@ -72,7 +72,7 @@ export default function DashboardPage() {
   }, [data]);
 
   return (
-    <Layout className="grid p-4 gap-4 justify-center justify-items-center content-end">
+    <Layout>
       <div className="fixed top-0 left-0 p-4">
         <h1>{`Dashboard`}</h1>
         <Form method="post">
@@ -81,14 +81,16 @@ export default function DashboardPage() {
           </Button>
         </Form>
       </div>
-      <div
-        ref={messageWindowRef}
-        className="w-[600px] grid gap-4 justify-stretch items-end overflow-x-auto"
-      >
-        <MessageList messageArr={messageArr} myUsername={myUsername} />
-        <div id="chat-window-bottom" ref={messageEndRef}></div>
+      <div className="h-full max-w-xl mx-auto grid p-4 gap-4 justify-items-center content-end">
+        <div
+          ref={messageWindowRef}
+          className="w-full max-w-lg grid gap-4 justify-stretch items-end overflow-x-auto"
+        >
+          <MessageList messageArr={messageArr} myUsername={myUsername} />
+          <div id="chat-window-bottom" ref={messageEndRef}></div>
+        </div>
+        <DrawingPad />
       </div>
-      <DrawingPad />
     </Layout>
   );
 }
