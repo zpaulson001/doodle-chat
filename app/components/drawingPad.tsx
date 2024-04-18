@@ -45,6 +45,8 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
 
   function startPosition(pos: Position) {
     isDrawing = true;
+    ctx?.beginPath();
+    ctx?.moveTo(pos.x, pos.y);
     draw(pos);
   }
 
@@ -59,6 +61,7 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
       endPosition();
       return;
     }
+
     ctx?.lineTo(x, y);
     ctx?.stroke();
     ctx?.beginPath();
@@ -150,7 +153,9 @@ export default function DrawingPad() {
   return (
     <div className="flex gap-2">
       <canvas
-        className="h-[150px] w-[300px] rounded-md border border-input bg-white p-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        width="300"
+        height="180"
+        className="rounded-md border border-input bg-white p-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         ref={canvas}
       ></canvas>
       <div className="flex flex-col-reverse gap-2">
