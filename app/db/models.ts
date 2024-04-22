@@ -1,62 +1,117 @@
 import { db } from './db';
+import * as argon2 from 'argon2';
 
-export async function createUser(username: string, passHash: string) {
-  return db.user.create({ data: { username, passHash } });
+export async function createUser(username: string, password: string) {
+  const hashedPassword = await argon2.hash(password);
+
+  return db.user.create({ data: { username, passHash: hashedPassword } });
 }
 
-export async function createMessage(userId: string, image: string) {
+export async function createMessage(
+  author: string,
+  image: string,
+  threadId: string
+) {
   return db.message.create({
-    data: { authorId: userId, image: image },
+    data: { author, dataURL: image, threadId },
   });
 }
 
-export async function readMessages(userId: string) {
-  const query = await db.message.findMany({
+export async function getAllUsers() {
+  const query = await db.user.findMany({
+    select: {
+      username: true,
+    },
+  });
+  return query;
+}
+
+export async function getUsersThreads(username: string) {
+  const query = await db.thread.findMany({
     where: {
-      authorId: { equals: userId },
+      members: {
+        some: {
+          username: username,
+        },
+      },
     },
     select: {
       id: true,
-      image: true,
-      author: {
+      name: true,
+      picture: true,
+      members: {
         select: {
-          username: true,
+          user: {
+            select: {
+              username: true,
+            },
+          },
         },
       },
     },
   });
 
-  const messages = query.map((entry) => {
+  const data = query.map((thread) => {
     return {
-      id: entry.id,
-      url: entry.image,
-      username: entry.author.username,
+      id: thread.id,
+      members: thread.members.map((item) => {
+        return item.user.username;
+      }),
+      name: thread.name,
+      picture: thread.picture,
     };
   });
 
-  return messages;
+  return data;
 }
 
-export async function readAllMessages() {
-  const query = await db.message.findMany({
-    select: {
-      id: true,
-      image: true,
-      author: {
-        select: {
-          username: true,
+export async function createNewThread(
+  username: string,
+  recipientUsername: string
+) {
+  let threadExists = false;
+
+  const usernames = [username, recipientUsername];
+
+  //returns all threads that have the given usernames as group members
+  const threadQuery = await db.thread.findFirst({
+    where: {
+      members: {
+        every: {
+          username: {
+            in: usernames,
+          },
         },
       },
     },
+    select: {
+      id: true,
+      members: true,
+    },
   });
 
-  const messages = query.map((entry) => {
-    return {
-      id: entry.id,
-      url: entry.image,
-      username: entry.author.username,
-    };
-  });
+  // if the number of group members for the thread is equal to the specified number
+  // of group members, we can be sure that the thread already exists
+  if (threadQuery?.members.length === usernames.length) {
+    threadExists = true;
+  }
 
-  return messages;
+  console.log(threadExists);
+
+  if (threadExists === false) {
+    const newThread = await db.thread.create({ data: {} });
+
+    const newMembersPromises = [username, recipientUsername].map(
+      async (username) => {
+        return await db.groupMember.create({
+          data: {
+            username: username,
+            threadId: newThread.id,
+          },
+        });
+      }
+    );
+
+    const newMembers = await Promise.all(newMembersPromises);
+  }
 }
