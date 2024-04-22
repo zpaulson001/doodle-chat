@@ -13,7 +13,6 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { createUser } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
-import * as argon2 from 'argon2';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return await authenticator.isAuthenticated(request, {
@@ -26,9 +25,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const username = form.get('username') as string;
   const password = form.get('password') as string;
 
-  const hashedPassword = await argon2.hash(password);
-
-  const user = await createUser(username, hashedPassword);
+  const user = await createUser(username, password);
 
   if (!user) {
     throw new Error();
