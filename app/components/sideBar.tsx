@@ -9,6 +9,7 @@ import {
 import { Form } from '@remix-run/react';
 import NewMessageModal from './newMessageModal';
 import ThreadList from './threadList';
+import { LogOut } from 'lucide-react';
 
 type SideBarProps = {
   className?: string;
@@ -24,10 +25,10 @@ export default function SideBar({ className }: SideBarProps) {
       <CardContent className="flex-grow">
         <ThreadList />
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex-row justify-end">
         <Form method="post">
-          <Button name="intent" value="logout">
-            Log out
+          <Button name="intent" variant="outline" value="logout">
+            <LogOut className="h-4 w-4" />
           </Button>
         </Form>
       </CardFooter>
