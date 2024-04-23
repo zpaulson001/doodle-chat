@@ -51,9 +51,12 @@ export function ErrorBoundary() {
               src="https://images.squarespace-cdn.com/content/v1/5eff72dcc0ca0d3ec54f0b89/491c097e-eb2b-496f-92ba-ba78a367f7e3/Screen+Recording+2024-04-21+at+8.25.09%E2%80%AFAM.gif?format=300w"
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex justify-between">
             <Button>
-              <Link to="/login">Back to Login page</Link>
+              <Link to="/login">Back to Login</Link>
+            </Button>
+            <Button>
+              <Link to="/dashboard">Back to Dashboard</Link>
             </Button>
           </CardFooter>
         </Card>
