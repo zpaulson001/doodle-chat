@@ -13,10 +13,10 @@ export default function UserCommandItem({ username }: userButtonProps) {
   if (username === myUsername) return null;
 
   return (
-    <CommandItem value={username}>
-      <Form method="post">
+    <CommandItem value={username} className="p-0">
+      <Form method="post" className="w-full">
         <button
-          className="h-full gap-4 w-full flex justify-start px-2 items-center"
+          className="h-full w-full gap-4 flex px-4 py-1.5 items-center"
           name="intent"
           value="newThread"
         >
