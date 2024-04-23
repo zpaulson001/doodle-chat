@@ -7,9 +7,9 @@ import {
   CardTitle,
 } from './ui/card';
 import { Form } from '@remix-run/react';
-import NewMessageModal from './newMessageModal';
 import ThreadList from './threadList';
 import { LogOut } from 'lucide-react';
+import NewMessagePopOver from './newMessagePopover';
 
 type SideBarProps = {
   className?: string;
@@ -20,7 +20,7 @@ export default function SideBar({ className }: SideBarProps) {
     <Card className={`flex flex-col justify-between ${className}`}>
       <CardHeader className="flex-row flex-nowrap gap-4 justify-between items-center">
         <CardTitle>Chat</CardTitle>
-        <NewMessageModal />
+        <NewMessagePopOver />
       </CardHeader>
       <CardContent className="flex-grow">
         <ThreadList />
