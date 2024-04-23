@@ -26,6 +26,16 @@ export async function getAllUsers() {
   return query;
 }
 
+export async function getThread(threadId: string) {
+  const query = await db.thread.findFirst({
+    where: {
+      id: threadId,
+    },
+  });
+
+  return query;
+}
+
 export async function getUsersThreads(username: string) {
   const query = await db.thread.findMany({
     where: {

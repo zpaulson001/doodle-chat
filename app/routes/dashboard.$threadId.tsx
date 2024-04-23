@@ -3,7 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import ChatWindow from '~/components/chatWindow';
 import DrawingPad from '~/components/drawingPad';
 import MessageList from '~/components/messageList';
-import { getMessagesOfThread } from '~/db/models';
+import { getMessagesOfThread, getThread } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 import { handleCreateMessage } from '~/utils/dashboard.server';
 
@@ -11,6 +11,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: '/login',
   });
+
+  const thread = await getThread(params.threadId as string);
+
+  if (!thread) {
+    throw new Response('Not Found', { status: 404, statusText: 'Not Found' });
+  }
 
   const messageArr = await getMessagesOfThread(params.threadId as string);
 
