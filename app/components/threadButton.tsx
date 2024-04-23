@@ -1,7 +1,8 @@
-import { useLoaderData } from '@remix-run/react';
+import { NavLink, useLoaderData } from '@remix-run/react';
 import { loader } from '~/routes/dashboard';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { DialogTrigger } from './ui/dialog';
 
 type ThreadArgs = {
   id: string;
@@ -10,7 +11,12 @@ type ThreadArgs = {
   members: string[];
 };
 
-export default function Thread({ id, name, picture, members }: ThreadArgs) {
+export default function ThreadButton({
+  id,
+  name,
+  picture,
+  members,
+}: ThreadArgs) {
   const { myUsername } = useLoaderData<typeof loader>();
 
   let threadContents = null;
@@ -45,10 +51,16 @@ export default function Thread({ id, name, picture, members }: ThreadArgs) {
 
   return (
     <Button
+      asChild
       variant="outline"
       className="h-16 gap-4 w-full flex px-8 justify-start"
     >
-      {threadContents}
+      <NavLink
+        to={`/dashboard/${id}`}
+        className="aria-[current=page]:bg-emerald-100"
+      >
+        {threadContents}
+      </NavLink>
     </Button>
   );
 }
