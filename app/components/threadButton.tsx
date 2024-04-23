@@ -2,7 +2,6 @@ import { NavLink, useLoaderData } from '@remix-run/react';
 import { loader } from '~/routes/dashboard';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { DialogTrigger } from './ui/dialog';
 
 type ThreadArgs = {
   id: string;
