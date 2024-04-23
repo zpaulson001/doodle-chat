@@ -1,7 +1,7 @@
 import { useLoaderData } from '@remix-run/react';
 import { ScrollArea } from './ui/scroll-area';
 import { loader } from '~/routes/dashboard';
-import Thread from './thread';
+import ThreadButton from './threadButton';
 
 export default function ThreadList() {
   const { threadArr } = useLoaderData<typeof loader>();
@@ -11,7 +11,11 @@ export default function ThreadList() {
       <div className="grid gap-2">
         {threadArr.map((thread) => {
           return (
-            <Thread key={thread.id} id={thread.id} members={thread.members} />
+            <ThreadButton
+              key={thread.id}
+              id={thread.id}
+              members={thread.members}
+            />
           );
         })}
       </div>
