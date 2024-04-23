@@ -5,7 +5,7 @@ type LayoutProps = {
 
 export default function Layout({ children, className }: LayoutProps) {
   return (
-    <div className={`h-screen w-full bg-emerald-200 ${className}`}>
+    <div className={`h-screen w-full bg-emerald-100 ${className}`}>
       {children}
     </div>
   );
