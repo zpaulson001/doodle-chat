@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { ActionFunctionArgs, LoaderFunctionArgs, json } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { Button } from '~/components/ui/button';
 import {
@@ -20,10 +20,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  return await authenticator.authenticate('user-pass', request, {
+  const user = await authenticator.authenticate('user-pass', request, {
     successRedirect: '/dashboard',
     failureRedirect: '/login',
   });
+
+  const formData = await request.formData();
+
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
+
+  const errors = {};
+
+  return json({ user, errors });
 }
 
 export default function LoginPage() {
