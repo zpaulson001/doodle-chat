@@ -94,9 +94,8 @@ export async function createNewThread(
   // of group members, we can be sure that the thread already exists
   if (threadQuery?.members.length === usernames.length) {
     threadExists = true;
+    return threadQuery.id;
   }
-
-  console.log(threadExists);
 
   if (threadExists === false) {
     const newThread = await db.thread.create({ data: {} });
@@ -113,5 +112,24 @@ export async function createNewThread(
     );
 
     const newMembers = await Promise.all(newMembersPromises);
+    return newThread.id;
   }
+}
+
+export async function getMessagesOfThread(threadId: string) {
+  const query = await db.message.findMany({
+    where: {
+      threadId: threadId,
+    },
+  });
+
+  const messageArr = query.map((message) => {
+    return {
+      id: message.id,
+      username: message.author,
+      url: message.dataURL,
+    };
+  });
+
+  return messageArr;
 }
