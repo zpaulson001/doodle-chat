@@ -1,4 +1,9 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, json } from '@remix-run/node';
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+  json,
+} from '@remix-run/node';
 import { Outlet, useResolvedPath, useRevalidator } from '@remix-run/react';
 import { useEffect } from 'react';
 import { useEventSource } from 'remix-utils/sse/react';
@@ -7,6 +12,10 @@ import SideBar from '~/components/sideBar';
 import { getAllUsers, getUsersThreads } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 import { handleCreateNewThread } from '~/utils/dashboard.server';
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Dwyzzi | Dashboard' }];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request, {
