@@ -40,7 +40,7 @@ export default function Thread() {
 
   return (
     <>
-      <ChatWindow className="border border-red-500">
+      <ChatWindow>
         <MessageList messageArr={messageArr} myUsername={username} />
       </ChatWindow>
       <DrawingPad />

@@ -74,9 +74,9 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <div className="flex gap-4 h-full max-w-4xl mx-auto border border-red-500 p-4">
+      <div className="flex gap-4 h-full max-w-4xl mx-auto">
         <SideBar className="w-80" />
-        <div className="grid gap-4 flex-grow justify-items-center content-end border border-red-500">
+        <div className="grid gap-4 flex-grow justify-items-center content-end">
           <Outlet />
         </div>
       </div>
