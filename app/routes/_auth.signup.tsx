@@ -82,6 +82,7 @@ export async function action({ request }: ActionFunctionArgs) {
     if (error instanceof Response) return error;
     if (error instanceof AuthorizationError) {
       // here the error is related to the authentication process
+      errors.user = error.message;
       return json({ errors });
       // errors.user = error.message;
     }
