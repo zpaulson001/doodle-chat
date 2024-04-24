@@ -1,28 +1,32 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, json } from '@remix-run/node';
 import {
-  Form,
-  useLoaderData,
-  useResolvedPath,
-  useRevalidator,
-} from '@remix-run/react';
-import { useEffect, useRef } from 'react';
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+  json,
+} from '@remix-run/node';
+import { Outlet, useResolvedPath, useRevalidator } from '@remix-run/react';
+import { useEffect } from 'react';
 import { useEventSource } from 'remix-utils/sse/react';
-import DrawingPad from '~/components/drawingPad';
 import Layout from '~/components/layout';
-import MessageList from '~/components/messageList';
-import { Button } from '~/components/ui/button';
-import { readAllMessages } from '~/db/models';
+import SideBar from '~/components/sideBar';
+import { getAllUsers, getUsersThreads } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
-import { handleCreateMessage } from '~/utils/dashboard.server';
+import { handleCreateNewThread } from '~/utils/dashboard.server';
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Dwyzzi | Dashboard' }];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: '/login',
   });
 
-  const messageArr = await readAllMessages();
+  const userArr = await getAllUsers();
 
-  return json({ myUsername: user.username, messageArr });
+  const threadArr = await getUsersThreads(user.username);
+
+  return json({ myUsername: user.username, userArr, threadArr });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -42,8 +46,8 @@ export async function action({ request }: ActionFunctionArgs) {
     case 'logout':
       await authenticator.logout(request, { redirectTo: '/login' });
       break;
-    case 'sendMessage':
-      await handleCreateMessage(user.id, formData);
+    case 'newThread':
+      return await handleCreateNewThread(formData);
       break;
   }
 
@@ -51,9 +55,6 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function DashboardPage() {
-  const messageEndRef = useRef<HTMLDivElement>(null);
-  const messageWindowRef = useRef<HTMLDivElement>(null);
-  const { myUsername, messageArr } = useLoaderData<typeof loader>();
   const path = useResolvedPath('./stream');
   const data = useEventSource(path.pathname);
   const revalidator = useRevalidator();
@@ -73,23 +74,11 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <div className="fixed top-0 left-0 p-4">
-        <h1>{`Dashboard`}</h1>
-        <Form method="post">
-          <Button name="intent" value="logout">
-            Log out
-          </Button>
-        </Form>
-      </div>
-      <div className="h-full max-w-xl mx-auto grid p-4 gap-4 justify-items-center content-end">
-        <div
-          ref={messageWindowRef}
-          className="w-full max-w-lg grid gap-4 justify-stretch items-end overflow-x-auto"
-        >
-          <MessageList messageArr={messageArr} myUsername={myUsername} />
-          <div id="chat-window-bottom" ref={messageEndRef}></div>
+      <div className="flex gap-4 h-full max-w-4xl mx-auto p-4">
+        <SideBar className="w-80" />
+        <div className="grid gap-4 flex-grow justify-items-center content-end">
+          <Outlet />
         </div>
-        <DrawingPad />
       </div>
     </Layout>
   );

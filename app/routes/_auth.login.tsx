@@ -1,5 +1,11 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+  json,
+} from '@remix-run/node';
+import { Link, useActionData } from '@remix-run/react';
+import { AuthorizationError } from 'remix-auth';
 import { Button } from '~/components/ui/button';
 import {
   Card,
@@ -11,22 +17,67 @@ import {
 } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
+import { getUser } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 
+type Errors = {
+  username?: string;
+  password?: string;
+  user?: string;
+};
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Dwyzzi | Login' }];
+};
+
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await authenticator.isAuthenticated(request, {
-    successRedirect: '/dashboard',
-  });
+  // return await authenticator.isAuthenticated(request, {
+  //   successRedirect: '/dashboard',
+  // });
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  return await authenticator.authenticate('user-pass', request, {
-    successRedirect: '/dashboard',
-    failureRedirect: '/login',
-  });
+  const errors: Errors = {};
+
+  const formData = await request.clone().formData();
+
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
+
+  if (username.length < 5) {
+    errors.username = 'Username must be at least 5 characters long';
+  }
+
+  if (password.length < 8) {
+    errors.password = 'Password must be at least 8 characters long';
+  }
+
+  if (errors.username || errors.password) {
+    return json({ errors });
+  }
+
+  try {
+    return await authenticator.authenticate('user-pass', request, {
+      successRedirect: '/dashboard',
+      throwOnError: true,
+    });
+  } catch (error) {
+    // Because redirects work by throwing a Response, you need to check if the
+    // caught error is a response and return it or throw it again
+    if (error instanceof Response) return error;
+    if (error instanceof AuthorizationError) {
+      // here the error is related to the authentication process
+      errors.user = error.message;
+      return json({ errors });
+    }
+    // here the error is a generic error that another reason may throw
+  }
 }
 
 export default function LoginPage() {
+  const actionData = useActionData<typeof action>();
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -45,6 +96,9 @@ export default function LoginPage() {
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="name">Username</Label>
                 <Input id="username" name="username" placeholder="" />
+                <p className="text-sm text-red-500 mt-2">
+                  {actionData?.errors?.username}
+                </p>
               </div>
             </div>
             <div className="grid w-full items-center gap-4">
@@ -56,10 +110,14 @@ export default function LoginPage() {
                   name="password"
                   placeholder=""
                 />
+                <p className="text-sm text-red-500 mt-2">
+                  {actionData?.errors?.password}
+                </p>
               </div>
             </div>
           </div>
         </form>
+        <p className="text-sm text-red-500 mt-2">{actionData?.errors?.user}</p>
       </CardContent>
       <CardFooter>
         <Button form="login-form" type="submit" className="w-full">
