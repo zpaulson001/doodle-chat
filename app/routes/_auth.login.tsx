@@ -42,6 +42,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const formData = await request.clone().formData();
 
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
+
+  if (username.length < 5) {
+    errors.username = 'Username must be at least 5 characters long';
+  }
+
+  if (password.length < 8) {
+    errors.password = 'Password must be at least 8 characters long';
+  }
+
+  if (errors.username || errors.password) {
+    return json({ errors });
+  }
+
   try {
     return await authenticator.authenticate('user-pass', request, {
       successRedirect: '/dashboard',
@@ -54,34 +69,10 @@ export async function action({ request }: ActionFunctionArgs) {
     if (error instanceof AuthorizationError) {
       // here the error is related to the authentication process
       errors.user = error.message;
+      return json({ errors });
     }
     // here the error is a generic error that another reason may throw
   }
-
-  const username = formData.get('username') as string;
-  const password = formData.get('password') as string;
-
-  const user = await getUser(username);
-
-  console.log(user);
-
-  if (username.length < 5) {
-    errors.username = 'Username must be at least 5 characters long';
-  }
-
-  if (password.length < 8) {
-    errors.password = 'Password must be at least 8 characters long';
-  }
-
-  if (!user) {
-    if (username.length >= 5) {
-      errors.user =
-        "We tried, but we couldn't find ya. Please create an account.";
-    }
-  }
-
-  console.log(errors.user);
-  return json({ errors });
 }
 
 export default function LoginPage() {
