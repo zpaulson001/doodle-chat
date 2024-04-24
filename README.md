@@ -1,6 +1,6 @@
 # Welcome to Doodle Chat!
 
-Doodle chat is a real-time chat application with a twist. The only messages you can send are doodles! It's built with Remix, shadcn/ui componenets, Tailwind, Prisma, and Turso. Deployed on Fly.io.
+Doodle chat is a real-time chat application with a twist. The only messages you can send are doodles! It's built with React/Remix, shadcn/ui componenets, Tailwind, Prisma, and Turso. Deployed on Fly.io.
 
 ## Fixes
 

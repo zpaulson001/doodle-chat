@@ -24,7 +24,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Dwyzzi' }];
+  return [{ title: 'Doodle Chat' }];
 };
 
 export function ErrorBoundary() {

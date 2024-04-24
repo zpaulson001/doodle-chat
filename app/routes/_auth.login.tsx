@@ -17,7 +17,6 @@ import {
 } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { getUser } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 
 type Errors = {
@@ -27,7 +26,7 @@ type Errors = {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Dwyzzi | Login' }];
+  return [{ title: 'Doodle Chat | Login' }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -81,9 +80,9 @@ export default function LoginPage() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Welcome to Dwyzzi 🫨</CardTitle>
+        <CardTitle>Welcome to Doodle Chat ✏️</CardTitle>
         <CardDescription>
-          {`New to Dwyzzi?`}
+          {`New to Doodle Chat?`}
           <Link to="/signup">
             <Button variant="link">Create an account.</Button>
           </Link>
@@ -119,10 +118,17 @@ export default function LoginPage() {
         </form>
         <p className="text-sm text-red-500 mt-2">{actionData?.errors?.user}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="grid gap-2">
         <Button form="login-form" type="submit" className="w-full">
           Log in
         </Button>
+        <form method="post">
+          <input type="hidden" name="username" value="demouser" />
+          <input type="hidden" name="password" value="demouserpassword" />
+          <Button type="submit" className="w-full" variant="outline">
+            Demo Account
+          </Button>
+        </form>
       </CardFooter>
     </Card>
   );
