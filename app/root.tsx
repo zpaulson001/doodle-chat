@@ -8,7 +8,7 @@ import {
   useRouteError,
 } from '@remix-run/react';
 
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import stylesheet from '~/tailwind.css?url';
 import {
   Card,
@@ -22,6 +22,10 @@ import { Button } from './components/ui/button';
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
 ];
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Dwyzzi' }];
+};
 
 export function ErrorBoundary() {
   const error = useRouteError();
