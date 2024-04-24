@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Send, Trash2 } from 'lucide-react';
 import { useFetcher } from '@remix-run/react';
-import { ActionFunctionArgs } from '@remix-run/node';
 
 function clearCanvas(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext('2d');
@@ -106,10 +105,6 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
   canvas.addEventListener('touchmove', (e) => draw(getPosition(e)));
   canvas.addEventListener('mouseout', endPosition);
   canvas.addEventListener('touchcancel', endPosition);
-}
-
-export async function action({ request }: ActionFunctionArgs) {
-  console.log(request);
 }
 
 export default function DrawingPad() {
