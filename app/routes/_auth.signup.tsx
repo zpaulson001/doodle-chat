@@ -1,5 +1,11 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+  json,
+} from '@remix-run/node';
+import { Link, useActionData } from '@remix-run/react';
+import { AuthorizationError } from 'remix-auth';
 import { Button } from '~/components/ui/button';
 import {
   Card,
@@ -11,33 +17,80 @@ import {
 } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { createUser } from '~/db/models';
+import { createUser, getUser } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 
+type Errors = {
+  username?: string;
+  password?: string;
+  user?: string;
+};
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Dwyzzi | Sign up' }];
+};
+
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await authenticator.isAuthenticated(request, {
-    successRedirect: '/dashboard',
-  });
+  // return await authenticator.isAuthenticated(request, {
+  //   successRedirect: '/dashboard',
+  // });
+
+  return null;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const form = await request.clone().formData();
-  const username = form.get('username') as string;
-  const password = form.get('password') as string;
+  const errors: Errors = {};
+
+  const formData = await request.clone().formData();
+  const username = formData.get('username') as string;
+  const password = formData.get('password') as string;
+
+  if (username.length < 5) {
+    errors.username = 'Username must be at least 5 characters long';
+  }
+
+  if (password.length < 8) {
+    errors.password = 'Password must be at least 8 characters long';
+  }
+
+  if (errors.username || errors.password) {
+    return json({ errors });
+  }
+
+  const existingUser = await getUser(username);
+
+  if (existingUser) {
+    errors.user = `User "${username}" already exists. Please log in.`;
+    return json({ errors });
+  }
 
   const user = await createUser(username, password);
 
   if (!user) {
-    throw new Error();
+    errors.user = 'Failed to create new user.';
+    return json({ errors });
   }
 
-  return await authenticator.authenticate('user-pass', request, {
-    successRedirect: '/dashboard',
-    failureRedirect: '/index',
-  });
+  try {
+    return await authenticator.authenticate('user-pass', request, {
+      successRedirect: '/dashboard',
+      throwOnError: true,
+    });
+  } catch (error) {
+    // Because redirects work by throwing a Response, you need to check if the
+    // caught error is a response and return it or throw it again
+    if (error instanceof Response) return error;
+    if (error instanceof AuthorizationError) {
+      // here the error is related to the authentication process
+      return json({ errors });
+      // errors.user = error.message;
+    }
+    // here the error is a generic error that another reason may throw
+  }
 }
 
 export default function SignupPage() {
+  const actionData = useActionData<typeof action>();
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -56,6 +109,9 @@ export default function SignupPage() {
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="name">Username</Label>
                 <Input id="username" name="username" placeholder="" />
+                <p className="text-sm text-red-500 mt-2">
+                  {actionData?.errors?.username}
+                </p>
               </div>
             </div>
             <div className="grid w-full items-center gap-4">
@@ -67,10 +123,14 @@ export default function SignupPage() {
                   name="password"
                   placeholder=""
                 />
+                <p className="text-sm text-red-500 mt-2">
+                  {actionData?.errors?.password}
+                </p>
               </div>
             </div>
           </div>
         </form>
+        <p className="text-sm text-red-500 mt-2">{actionData?.errors?.user}</p>
       </CardContent>
       <CardFooter>
         <Button type="submit" form="signup-form" className="w-full">
