@@ -17,7 +17,6 @@ import {
 } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import { getUser } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 
 type Errors = {
@@ -119,10 +118,17 @@ export default function LoginPage() {
         </form>
         <p className="text-sm text-red-500 mt-2">{actionData?.errors?.user}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="grid gap-2">
         <Button form="login-form" type="submit" className="w-full">
           Log in
         </Button>
+        <form method="post">
+          <input type="hidden" name="username" value="demouser" />
+          <input type="hidden" name="password" value="demouserpassword" />
+          <Button type="submit" className="w-full" variant="outline">
+            Demo Account
+          </Button>
+        </form>
       </CardFooter>
     </Card>
   );
