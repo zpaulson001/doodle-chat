@@ -14,14 +14,15 @@ const formStrategy = new FormStrategy(async ({ form }) => {
   const user = await db.user.findUnique({ where: { username: username } });
 
   if (!user) {
-    console.log('Username does not exist');
-    throw new AuthorizationError();
+    throw new AuthorizationError(
+      `We tried, but we couldn't find ya. Please create an account.`
+    );
   }
 
   const passwordsMatch = await argon2.verify(user.passHash, password);
 
   if (!passwordsMatch) {
-    throw new AuthorizationError();
+    throw new AuthorizationError('Invalid password');
   }
 
   return user;
