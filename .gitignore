@@ -3,7 +3,7 @@ node_modules
 /.cache
 /build
 .env
-sqlite.db
+sqlite.db*
 seed.ts
 
 /public/img
