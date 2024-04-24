@@ -14,7 +14,7 @@ import { authenticator } from '~/utils/auth.server';
 import { handleCreateNewThread } from '~/utils/dashboard.server';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Dwyzzi | Dashboard' }];
+  return [{ title: 'Doodle Chat | Dashboard' }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {

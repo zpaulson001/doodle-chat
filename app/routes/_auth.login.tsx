@@ -26,7 +26,7 @@ type Errors = {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Dwyzzi | Login' }];
+  return [{ title: 'Doodle Chat | Login' }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -80,9 +80,9 @@ export default function LoginPage() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Welcome to Dwyzzi 🫨</CardTitle>
+        <CardTitle>Welcome to Doodle Chat ✏️</CardTitle>
         <CardDescription>
-          {`New to Dwyzzi?`}
+          {`New to Doodle Chat?`}
           <Link to="/signup">
             <Button variant="link">Create an account.</Button>
           </Link>

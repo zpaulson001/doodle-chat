@@ -27,7 +27,7 @@ type Errors = {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Dwyzzi | Sign up' }];
+  return [{ title: 'Doodle Chat | Sign up' }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
