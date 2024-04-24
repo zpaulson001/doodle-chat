@@ -7,6 +7,16 @@ export async function createUser(username: string, password: string) {
   return db.user.create({ data: { username, passHash: hashedPassword } });
 }
 
+export async function getUser(username: string) {
+  const query = await db.user.findFirst({
+    where: {
+      username: username,
+    },
+  });
+
+  return query;
+}
+
 export async function createMessage(
   author: string,
   image: string,
