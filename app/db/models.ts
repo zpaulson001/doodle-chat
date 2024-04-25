@@ -17,6 +17,16 @@ export async function getUser(username: string) {
   return query;
 }
 
+export async function deleteMessage(id: string) {
+  const query = await db.message.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return query;
+}
+
 export async function createMessage(
   author: string,
   image: string,
