@@ -147,13 +147,18 @@ export default function DrawingPad() {
 
   return (
     <div className="flex gap-2">
-      <Button variant="outline" size="icon" onClick={handleClear}>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={handleClear}
+        className="hover:text-red-400"
+      >
         <Trash2 className="h-4 w-4" />
       </Button>
       <canvas
         width="300"
         height="180"
-        className="rounded-md border border-input bg-white p-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-md border border-input bg-white p-0 shadow-sm"
         ref={canvas}
       ></canvas>
       <Button variant="outline" size="icon" onClick={handleSubmit}>
