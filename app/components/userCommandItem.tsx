@@ -13,7 +13,10 @@ export default function UserCommandItem({ username }: userButtonProps) {
   if (username === myUsername) return null;
 
   return (
-    <CommandItem value={username} className="p-0">
+    <CommandItem
+      value={username}
+      className="p-0 hover:bg-slate-100 active:bg-emerald-100 transition-colors"
+    >
       <Form method="post" className="w-full">
         <button
           className="h-full w-full gap-4 flex px-4 py-1.5 items-center"
