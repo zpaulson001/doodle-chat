@@ -42,6 +42,9 @@ export async function getAllUsers() {
     select: {
       username: true,
     },
+    orderBy: {
+      username: 'asc',
+    },
   });
   return query;
 }
