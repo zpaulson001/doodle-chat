@@ -9,9 +9,12 @@ import { useEffect } from 'react';
 import { useEventSource } from 'remix-utils/sse/react';
 import Layout from '~/components/layout';
 import SideBar from '~/components/sideBar';
-import { getAllUsers, getUsersThreads } from '~/db/models';
+import { getAllUsers, getUserPicture, getUsersThreads } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
-import { handleCreateNewThread } from '~/utils/dashboard.server';
+import {
+  handleCreateNewThread,
+  handleUpdateUserProfilePic,
+} from '~/utils/dashboard.server';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Doodle Chat | Dashboard' }];
@@ -22,11 +25,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     failureRedirect: '/login',
   });
 
+  const userpic = await getUserPicture(user.username);
+
   const userArr = await getAllUsers();
 
   const threadArr = await getUsersThreads(user.username);
 
-  return json({ myUsername: user.username, userArr, threadArr });
+  return json({
+    myUsername: user.username,
+    myPicture: userpic,
+    userArr,
+    threadArr,
+  });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -48,6 +58,9 @@ export async function action({ request }: ActionFunctionArgs) {
       break;
     case 'newThread':
       return await handleCreateNewThread(formData);
+      break;
+    case 'updateUserProfilePic':
+      await handleUpdateUserProfilePic(user.username, formData);
       break;
   }
 

@@ -1,6 +1,10 @@
 import { redirect } from '@remix-run/node';
 import fs from 'fs';
-import { createMessage, createNewThread } from '~/db/models';
+import {
+  createMessage,
+  createNewThread,
+  updateUserProfilePic,
+} from '~/db/models';
 import { emitter } from './emitter.server';
 
 export function getImageAsDataUrl(path: string) {
@@ -41,4 +45,15 @@ export async function handleCreateNewThread(formData: FormData) {
   }
 
   return null;
+}
+
+export async function handleUpdateUserProfilePic(
+  username: string,
+  formData: FormData
+) {
+  const picture = formData.get('picture') as string;
+
+  const updatePic = await updateUserProfilePic(username, picture);
+
+  return updatePic;
 }

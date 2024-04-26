@@ -19,13 +19,15 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import EditProfilePicModal from './editProfilePicModal';
+import { useState } from 'react';
 
 type SideBarProps = {
   className?: string;
 };
 
 export default function SideBar({ className }: SideBarProps) {
-  const { myUsername } = useLoaderData<typeof loader>();
+  const { myUsername, myPicture } = useLoaderData<typeof loader>();
+  const [openEditProfilePicModal, setOpenEditProfilePicModal] = useState(false);
 
   return (
     <Card className={`flex flex-col justify-between ${className}`}>
@@ -40,21 +42,30 @@ export default function SideBar({ className }: SideBarProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="focus-visible:outline-none">
-              <Avatar className="">
+              <Avatar className={myPicture ? 'border border-slate-300' : ''}>
                 <AvatarImage
-                  src={`https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${myUsername}`}
+                  src={
+                    myPicture ||
+                    `https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${myUsername}`
+                  }
                 />
                 <AvatarFallback>{myUsername.substring(0, 1)}</AvatarFallback>
               </Avatar>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem className="active:bg-emerald-100">
-              Edit profile picture
+            <DropdownMenuItem
+              className="active:bg-emerald-100"
+              onClick={() => setOpenEditProfilePicModal(true)}
+            >
+              Edit profile pic
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <EditProfilePicModal />
+        <EditProfilePicModal
+          open={openEditProfilePicModal}
+          setOpen={setOpenEditProfilePicModal}
+        />
         <Form method="post">
           <Button name="intent" variant="outline" value="logout">
             <LogOut className="h-4 w-4" />
