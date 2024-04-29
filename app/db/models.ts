@@ -67,6 +67,7 @@ export async function getAllUsers() {
   const query = await db.user.findMany({
     select: {
       username: true,
+      picture: true,
     },
     orderBy: {
       username: 'asc',

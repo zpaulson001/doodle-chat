@@ -5,10 +5,13 @@ import { loader } from '~/routes/dashboard';
 
 type userButtonProps = {
   username: string;
+  picture: string | null;
 };
 
-export default function UserButton({ username }: userButtonProps) {
+export default function UserButton({ username, picture }: userButtonProps) {
   const { myUsername } = useLoaderData<typeof loader>();
+
+  console.log(`User button picture: ${picture}`);
 
   if (username === myUsername) return null;
 
@@ -22,7 +25,10 @@ export default function UserButton({ username }: userButtonProps) {
       >
         <Avatar className="">
           <AvatarImage
-            src={`https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${username}`}
+            src={
+              picture ||
+              `https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${username}`
+            }
           />
           <AvatarFallback>{username.substring(0, 1)}</AvatarFallback>
         </Avatar>

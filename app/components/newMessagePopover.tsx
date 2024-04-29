@@ -42,6 +42,7 @@ export default function NewMessagePopOver() {
                   <UserCommandItem
                     key={user.username}
                     username={user.username}
+                    picture={user.picture}
                   />
                 );
               })}

@@ -16,7 +16,7 @@ export default function ThreadButton({
   picture,
   members,
 }: ThreadArgs) {
-  const { myUsername } = useLoaderData<typeof loader>();
+  const { myUsername, userArr } = useLoaderData<typeof loader>();
 
   let threadContents = null;
 
@@ -35,11 +35,24 @@ export default function ThreadButton({
   } else {
     const recipient = members.find((member) => member !== myUsername);
 
+    const recipientIndex = userArr.findIndex(
+      (user) => user.username === recipient
+    );
+
+    let recipientPic = null;
+
+    if (recipientIndex > -1) {
+      recipientPic = userArr[recipientIndex].picture;
+    }
+
     threadContents = (
       <>
         <Avatar className="">
           <AvatarImage
-            src={`https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${recipient}`}
+            src={
+              recipientPic ||
+              `https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${recipient}`
+            }
           />
           <AvatarFallback>{recipient?.substring(0, 1)}</AvatarFallback>
         </Avatar>
