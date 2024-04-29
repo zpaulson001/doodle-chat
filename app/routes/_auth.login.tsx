@@ -70,8 +70,11 @@ export async function action({ request }: ActionFunctionArgs) {
       errors.user = error.message;
       return json({ errors });
     }
+    console.error(error);
     // here the error is a generic error that another reason may throw
   }
+
+  return 'something broke';
 }
 
 export default function LoginPage() {

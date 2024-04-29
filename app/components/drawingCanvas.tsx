@@ -1,17 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { Button } from './ui/button';
-import { Send, Trash2 } from 'lucide-react';
-import { useFetcher } from '@remix-run/react';
+import { Ref, forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
-function clearCanvas(canvas: HTMLCanvasElement) {
-  const ctx = canvas.getContext('2d');
-  if (ctx !== null) {
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-}
-
-function setUpCanvas(canvas: HTMLCanvasElement) {
+function setUpCanvas(canvas: HTMLCanvasElement | null) {
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   if (ctx === null) return;
 
@@ -25,6 +15,15 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
     x: number;
     y: number;
   };
+
+  function clearCanvas(canvas: HTMLCanvasElement | null) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (ctx !== null) {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  }
 
   function getPosition(e: MouseEvent | TouchEvent) {
     let x = 0;
@@ -107,63 +106,60 @@ function setUpCanvas(canvas: HTMLCanvasElement) {
   canvas.addEventListener('touchcancel', endPosition);
 }
 
-export default function DrawingPad() {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const fetcher = useFetcher();
+type CanvasProps = {
+  height?: number;
+  width?: number;
+  className?: string;
+};
+
+export type DrawingCanvasRef = {
+  clearCanvas: () => void;
+  getDataUrl: () => string | undefined;
+};
+
+function DrawingCanvas(
+  { height = 180, width = 300, className }: CanvasProps,
+  ref: Ref<DrawingCanvasRef>
+) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (canvas.current === null) {
-      return;
-    } else {
-      setUpCanvas(canvas.current);
-    }
+    setUpCanvas(canvasRef.current);
   }, []);
 
-  function handleClear() {
-    if (canvas.current === null) {
-      return;
-    } else {
-      clearCanvas(canvas.current);
+  function clearCanvas(canvas: HTMLCanvasElement | null) {
+    console.log('in clear canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (ctx !== null) {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   }
 
-  function handleSubmit() {
-    if (canvas.current === null) {
-      return;
-    } else {
-      const formData = new FormData();
-
-      const dataUrl = canvas.current.toDataURL();
-
-      formData.append('drawing', dataUrl);
-      formData.append('intent', 'sendMessage');
-      fetcher.submit(formData, {
-        method: 'post',
-      });
-
-      if (canvas.current) clearCanvas(canvas.current);
-    }
+  function getDataUrl(canvas: HTMLCanvasElement | null) {
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL();
+    return dataUrl;
   }
+
+  useImperativeHandle(ref, () => {
+    return {
+      clearCanvas: () => clearCanvas(canvasRef?.current),
+      getDataUrl: () => getDataUrl(canvasRef?.current),
+    };
+  });
 
   return (
-    <div className="flex gap-2">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={handleClear}
-        className="hover:text-red-400"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
-      <canvas
-        width="300"
-        height="180"
-        className="rounded-md border border-input bg-white p-0 shadow-sm"
-        ref={canvas}
-      ></canvas>
-      <Button variant="outline" size="icon" onClick={handleSubmit}>
-        <Send className="h-4 w-4" />
-      </Button>
-    </div>
+    <canvas
+      width={width}
+      height={height}
+      className={`border border-input bg-white p-0 shadow-sm ${className}`}
+      ref={canvasRef}
+    ></canvas>
   );
 }
+
+// DrawingCanvas.displayName = 'DrawingCanvas';
+
+export default forwardRef(DrawingCanvas);

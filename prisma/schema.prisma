@@ -13,6 +13,7 @@ model User {
   username  String        @unique
   passHash  String
   createdAt DateTime      @default(now())
+  picture   String?
   members   GroupMember[]
 }
 

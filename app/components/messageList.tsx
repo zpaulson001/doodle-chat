@@ -17,13 +17,14 @@ export default function MessageList({
   useEffect(() => {
     document
       .getElementById('bottom-message')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      ?.scrollIntoView({ behavior: 'instant', block: 'end' });
   });
 
   const messageNodeArr = messageArr.map((message) => {
     return (
       <Message
         key={message.id}
+        id={message.id}
         url={message.url}
         username={message.username}
         myUsername={myUsername}

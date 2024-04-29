@@ -3,7 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import ChatWindow from '~/components/chatWindow';
 import DrawingPad from '~/components/drawingPad';
 import MessageList from '~/components/messageList';
-import { getMessagesOfThread, getThread } from '~/db/models';
+import { deleteMessage, getMessagesOfThread, getThread } from '~/db/models';
 import { authenticator } from '~/utils/auth.server';
 import { handleCreateMessage } from '~/utils/dashboard.server';
 
@@ -30,7 +30,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const formData = await request.formData();
 
-  await handleCreateMessage(user.username, formData, params.threadId as string);
+  const intent = formData.get('intent');
+
+  switch (intent) {
+    case 'sendMessage':
+      await handleCreateMessage(
+        user.username,
+        formData,
+        params.threadId as string
+      );
+      break;
+    case 'deleteMessage':
+      await deleteMessage(formData.get('id') as string);
+      break;
+  }
 
   return null;
 }

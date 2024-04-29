@@ -17,6 +17,42 @@ export async function getUser(username: string) {
   return query;
 }
 
+export async function getUserPicture(username: string) {
+  const query = await db.user.findFirst({
+    where: {
+      username: username,
+    },
+    select: {
+      picture: true,
+    },
+  });
+
+  return query?.picture;
+}
+
+export async function updateUserProfilePic(username: string, image: string) {
+  const query = await db.user.update({
+    where: {
+      username: username,
+    },
+    data: {
+      picture: image,
+    },
+  });
+
+  return query;
+}
+
+export async function deleteMessage(id: string) {
+  const query = await db.message.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return query;
+}
+
 export async function createMessage(
   author: string,
   image: string,
@@ -31,6 +67,9 @@ export async function getAllUsers() {
   const query = await db.user.findMany({
     select: {
       username: true,
+    },
+    orderBy: {
+      username: 'asc',
     },
   });
   return query;
@@ -64,6 +103,7 @@ export async function getUsersThreads(username: string) {
           user: {
             select: {
               username: true,
+              picture: true,
             },
           },
         },

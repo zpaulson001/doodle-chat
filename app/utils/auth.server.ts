@@ -1,9 +1,14 @@
 import { FormStrategy } from 'remix-auth-form';
 import { Authenticator, AuthorizationError } from 'remix-auth';
 import { sessionStorage } from '~/utils/session.server';
-import { User } from '@prisma/client';
 import { db } from '~/db/db';
 import * as argon2 from 'argon2';
+
+type User = {
+  id: string;
+  username: string;
+  passHash: string;
+};
 
 const authenticator = new Authenticator<User>(sessionStorage);
 
@@ -11,7 +16,14 @@ const formStrategy = new FormStrategy(async ({ form }) => {
   const username = form.get('username') as string;
   const password = form.get('password') as string;
 
-  const user = await db.user.findUnique({ where: { username: username } });
+  const user = await db.user.findUnique({
+    where: { username: username },
+    select: {
+      id: true,
+      username: true,
+      passHash: true,
+    },
+  });
 
   if (!user) {
     throw new AuthorizationError(
