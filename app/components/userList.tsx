@@ -10,7 +10,13 @@ export default function UserList() {
     <ScrollArea className="h-80">
       <div className="grid gap-2">
         {userArr.map((user) => {
-          return <UserButton key={user.username} username={user.username} />;
+          return (
+            <UserButton
+              key={user.username}
+              username={user.username}
+              picture={user.picture}
+            />
+          );
         })}
       </div>
     </ScrollArea>

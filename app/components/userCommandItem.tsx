@@ -5,9 +5,13 @@ import { CommandItem } from './ui/command';
 
 type userButtonProps = {
   username: string;
+  picture: string | null;
 };
 
-export default function UserCommandItem({ username }: userButtonProps) {
+export default function UserCommandItem({
+  username,
+  picture,
+}: userButtonProps) {
   const { myUsername } = useLoaderData<typeof loader>();
 
   if (username === myUsername) return null;
@@ -25,7 +29,10 @@ export default function UserCommandItem({ username }: userButtonProps) {
         >
           <Avatar className="">
             <AvatarImage
-              src={`https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${username}`}
+              src={
+                picture ||
+                `https://api.dicebear.com/8.x/thumbs/svg?scale=75&seed=${username}`
+              }
             />
             <AvatarFallback>{username.substring(0, 1)}</AvatarFallback>
           </Avatar>
