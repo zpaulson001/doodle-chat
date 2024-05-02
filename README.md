@@ -1,6 +1,15 @@
 # Welcome to Doodle Chat!
 
-Doodle chat makes your conversations more intentional, more whimsical, and most importantly, more fun! It's a real-time chat application with a twist— the only messages you can send are doodles. It's built with React/Remix, shadcn/ui components, Tailwind CSS, Prisma, and a SQLite database hosted with Turso. Deployed on Fly.io.
+Doodle chat makes your conversations more intentional, more whimsical, and most importantly, more fun! It's a real-time chat application with a twist— the only messages you can send are doodles.
+
+Tech used:
+- React / Remix
+- shadcn/ui components
+- Tailwind CSS
+- Prisma
+- SQLite database for local develoment
+- libSQL database hosted on Turso for deployment
+- Deployed on Fly.io
 
 Link to live application: <https://doodle-chat.fly.dev>. If you just want to test it out without creating an account, be sure to click the "demo account" button on the login page. Send me a doodle 🙃! My handle -> @zacklemack
 
