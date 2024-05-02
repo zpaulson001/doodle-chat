@@ -4,6 +4,10 @@ Doodle chat makes your conversations more intentional, more whimsical, and most 
 
 Link to live application: <https://doodle-chat.fly.dev>. If you just want to test it out without creating an account, be sure to click the "demo account" button on the login page. Send me a doodle 🙃! My handle -> @zacklemack
 
+## Motivation
+
+Life is made better by friends, scribbles, and fewer distractions. Doodle Chat was designed not to hold your attention, but to put a smile on your face as you connect with others.
+
 ## Fixes
 
 - [x] Server-side validation for Login/Signup
