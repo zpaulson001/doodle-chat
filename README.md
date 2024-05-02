@@ -11,7 +11,9 @@ Tech used:
 - libSQL database hosted on Turso for deployment
 - Deployed on Fly.io
 
-Link to live application: <https://doodle-chat.fly.dev>. If you just want to test it out without creating an account, be sure to click the "demo account" button on the login page. Send me a doodle 🙃! My handle -> @zacklemack
+Link to live application: <https://doodle-chat.fly.dev>. If you just want to test it out without creating an account, be sure to click the "demo account" button on the login page. Send me a doodle! My handle -> @zacklemack
+
+🙃
 
 ## Motivation
 
