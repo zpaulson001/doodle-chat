@@ -4,6 +4,5 @@ node_modules
 /build
 .env
 sqlite.db*
-seed.ts
 
 /public/img

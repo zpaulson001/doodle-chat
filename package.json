@@ -42,7 +42,7 @@
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.5",
     "@remix-run/dev": "^2.8.1",
-    "@types/bun": "^1.0.12",
+    "@types/node": "^20.12.8",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
@@ -57,7 +57,8 @@
     "postcss": "^8.4.38",
     "prisma": "^5.13.0",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.1.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
     "vite": "^5.1.0",
     "vite-tsconfig-paths": "^4.2.1"
   },
