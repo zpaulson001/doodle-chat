@@ -70,7 +70,7 @@ npm run dev
 - [x] Delete messages
 - [x] Switch between conversation threads using the sidebar
 - [x] Users can draw their own profile picture
-- [ ] switch to pnpm
+- [x] switch to pnpm
 - [ ] Create dedicated backend, likely in fastapi. Set up as monorepo 🤞
 - [ ] Migrate DB to postgres
 - [ ] Migrate to deno
