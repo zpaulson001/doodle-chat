@@ -73,7 +73,7 @@ npm run dev
 - [x] switch to pnpm
 - [ ] Create dedicated backend, likely in fastapi. Set up as monorepo 🤞
 - [ ] Migrate DB to postgres
-- [ ] Migrate to deno
+- [ ] Validate with Zod
 - [ ] Improve mobile responsiveness
 - [ ] Opt-in email notifications
 - [ ] Add friends/known contacts
