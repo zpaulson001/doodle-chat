@@ -70,8 +70,12 @@ npm run dev
 - [x] Delete messages
 - [x] Switch between conversation threads using the sidebar
 - [x] Users can draw their own profile picture
-- [ ] Opt-in email notifications
+- [ ] switch to pnpm
+- [ ] Create dedicated backend, likely in fastapi. Set up as monorepo 🤞
+- [ ] Migrate DB to postgres
+- [ ] Migrate to deno
 - [ ] Improve mobile responsiveness
+- [ ] Opt-in email notifications
 - [ ] Add friends/known contacts
 - [ ] Group conversations
   - [ ] Change group name/picture
