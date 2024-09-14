@@ -1,8 +1,10 @@
 node_modules
+__pycache__
 
 /.cache
 /build
 .env
 sqlite.db*
+.venv
 
 /public/img
